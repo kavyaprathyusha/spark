@@ -1,0 +1,42 @@
+df_2010 = spark.read.csv('/tmp/chekkaka/Data_2010',header=False,sep=' ')
+df_2011 = spark.read.csv('/tmp/chekkaka/Data_2011',header=False,sep=' ')
+df_2012 = spark.read.csv('/tmp/chekkaka/Data_2012',header=False,sep=' ')
+df_2013 = spark.read.csv('/tmp/chekkaka/Data_2013',header=False,sep=' ')
+df_2014 = spark.read.csv('/tmp/chekkaka/Data_2014',header=False,sep=' ')
+df_2015 = spark.read.csv('/tmp/chekkaka/Data_2015',header=False,sep=' ')
+df_2016 = spark.read.csv('/tmp/chekkaka/Data_2016',header=False,sep=' ')
+df_2017 = spark.read.csv('/tmp/chekkaka/Data_2017',header=False,sep=' ')
+df_2018 = spark.read.csv('/tmp/chekkaka/Data_2018',header=False,sep=' ')
+df_2019 = spark.read.csv('/tmp/chekkaka/Data_2019',header=False,sep=' ')
+dfs = [df_2010, df_2011, df_2012, df_2013, df_2014, df_2015, df_2016, df_2017, df_2018, df_2019]
+from functools import reduce
+from pyspark.sql import DataFrame
+df_complete = reduce(DataFrame.unionAll, dfs)
+df_2010.createOrReplaceTempView("Weather_2010")
+df_2011.createOrReplaceTempView("Weather_2011")
+df_2012.createOrReplaceTempView("Weather_2012")
+df_2013.createOrReplaceTempView("Weather_2013")
+df_2014.createOrReplaceTempView("Weather_2014")
+df_2015.createOrReplaceTempView("Weather_2015")
+df_2016.createOrReplaceTempView("Weather_2016")
+df_2017.createOrReplaceTempView("Weather_2017")
+df_2018.createOrReplaceTempView("Weather_2018")
+df_2019.createOrReplaceTempView("Weather_2019")
+df_complete.createOrReplaceTempView("Weather")
+
+cleanData = df_complete.drop('_c1','_c4','_c6','_c8','_c10','_c12','_c14')
+cleanData = cleanData.withColumnRenamed('_c0','STN').withColumnRenamed('_c2','YEARMODA')\
+                    .withColumnRenamed('_c3','TEMP').withColumnRenamed('_c5','DEWP')\
+                    .withColumnRenamed('_c7','SLP').withColumnRenamed('_c9','STP')\
+                    .withColumnRenamed('_c11','VISIB').withColumnRenamed('_c13','WDSP')\
+                    .withColumnRenamed('_c15','MXSPD').withColumnRenamed('_c16','GUST')\
+                    .withColumnRenamed('_c17','MAX').withColumnRenamed('_c18','MIN')\
+                    .withColumnRenamed('_c19','PRCP').withColumnRenamed('_c20','SNDP')\
+                    .withColumnRenamed('_c21','FRSHTT')
+					
+cleanData.createOrReplaceTempView("Weather")
+
+from pyspark.sql.functions import col
+from pyspark.sql.types import DoubleType
+result= cleanData.withColumn('MAX',col('MAX').cast(DoubleType()))
+result.createOrReplaceTempView("Weather")

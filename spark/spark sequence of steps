@@ -1,0 +1,20 @@
+file_path="/data/weather/2019"
+inTextData=spark.read.format("csv").option("header","true").option("delim  ir","\t").load(file_path)
+name_list=inTextData.schema.names
+name_list=str(name_list).strip("['']").split(' ')
+names=[]
+for item in name_list:
+	if len(item)>0:
+	 names.append(item)
+rdd1=inTextData.rdd
+rdd2 = rdd1.map(lambda x:str(x).split('=')[1])
+rdd3=rdd2.map(lambda x: ' '.join(x.split()))
+rdd4=rdd3.map(lambda x:x[1:-2])
+rdd5=rdd4.map(lambda x:x[1])
+rdd5=rdd4.map(lambda x:x[1:0])
+rdd4=rdd3.map(lambda x:x[1:-1])
+rdd5=rdd4.map(lambda x:x[1:-1])
+rdd5.saveAsTextFile("/tmp/chekkaka/Data_2019")
+
+
+

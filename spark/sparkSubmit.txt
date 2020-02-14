@@ -1,0 +1,66 @@
+spark-submit --master yarn --deploy-mode client --executor-memory 1g --name wordcount --conf "spark.app.id=wordcount" WordCount.py /user/kumarlt/books/input/*.txt 4
+
+
+spark-submit --master yarn --deploy-mode client --executor-memory 1g --name wordcount --conf "spark.app.id=wordcount" newCount.py /user/kumarlt/books/input/*.txt 8
+
+
+pyspark --master yarn --py-files countFunction.py
+
+
+
+from pyspark.sql import *
+>>> inData = sc.textFile("cc/student/student.csv")
+
+parts = inData.map(lambda l: l.split(","))
+>>> people = parts.map(lambda p: Row(name=p[0], email=p[1], role=p[2], comment=p[3]))
+>>> schemaPeople = spark.createDataFrame(people)
+>>> schemaPeople.printSchema()
+
+schemaPeople.createOrReplaceTempView("people")
+>>> spark.sql("Select count(*) from people")
+
+
+spark.sql("Select count(*) from people").show()
+
+schemaPeople.printSchema()
+schemaPeople.where('name like "J%"').show()
+
+
+ inData = spark.read.csv("csv").option("header", "true").option("delimiter","\t").load("/tmp/chekkaka/SparkProjectTmpData/Clean_2010")
+ 
+ sc.textFile /tmp/chekkaka/SparkProjectTmpData/Clean_2010
+ 
+ # newInData = spark.read.csv(file_path+'temp',header=True,sep=' ',inferSchema=False,schema=schema)
+newInData = spark.read.csv(/tmp/chekkaka/SparkProjectTmpData/Clean_2010,header=False,sep=' ')
+
+rdd5.saveAsTextFile("/tmp/chekkaka/KavyaSparkData/clean_2010.txt")
+
+
+ cleanData.write.format('com.databricks.spark.csv').save("/tmp/chekkaka/myfile.csv")
+ newInData = spark.read.csv('/tmp/chekkaka/myfile1.csv')
+
+
+To save the headers to:
+
+cleanData.write.csv('/tmp/chekkaka/test.csv',header=True)
+
+
+data=spark.read.csv('/tmp/chekkaka/test.csv',header='true')
+
+
+ cleanData.write.csv('/tmp/chekkaka/2010CleanData',header=True)
+
+select * from Weather where 1 group by STN having TEMP=max(TEMP) order by STN asc
+
+
+working: Cast MAX TO DOUBBLE:
+>>> from pyspark.sql.functions import col
+>>> from pyspark.sql.types import DoubleType
+>>> result= cleanData.withColumn('MAX',col('MAX').cast(DoubleType()))
+
+spark.sql("SELECT YEARMODA,STN,MAX FROM Weather1 WHERE MAX IN (SELECT MAX(MAX) from Weather1 WHERE MAX!=9999.9)").show(20)
+
+rdd5.saveAsTextFile("/tmp/chekkaka/SparkProject/Data_2011")
+
+2011->tmp/chekkaka/SparkProject/Data_2011
+
